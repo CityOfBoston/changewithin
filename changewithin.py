@@ -47,7 +47,15 @@ def point_in_poly(x, y, poly):
         p1x, p1y = p2x, p2y
     return inside
 
-def pip(lon, lat): return point_in_poly(lon, lat, nypoly)
+def pip(lon, lat):
+    if(geotype == "MultiPolygon"):
+        for poly in nypoly:
+            if( point_in_poly(lon, lat, poly) ):
+                return true
+        return false
+
+    elif(geotype == "Polygon"):
+        return point_in_poly(lon, lat, nypoly)
 
 def coordAverage(c1, c2): return (float(c1) + float(c2)) / 2
 
@@ -136,7 +144,17 @@ def loadChangeset(changeset):
     return changeset
 
 ny = json.load(open(os.path.join(dir_path,'nyc.geojson')))
-nypoly = ny['features'][0]['geometry']['coordinates'][0]
+
+nypoly = [ ]
+geotype = 'Polygon'
+if(nypoly['features'][0]['geometry']['type'] == "Polygon"):
+    geotype = 'Polygon'
+    nypoly = ny['features'][0]['geometry']['coordinates'][0]
+elif(nypoly['features'][0]['geometry']['type'] == "MultiPolygon"):
+    geotype = 'MultiPolygon'
+    for poly in ny['features'][0]['geometry']['coordinates']:
+        nypoly.append(poly[0])
+
 nybox = get_bbox(nypoly)
 sys.stderr.write('getting state\n')
 state = getstate()
