@@ -3,12 +3,13 @@ from OpenStreetMap with `requests`, parses them with `lxml`, finds the ones that
 of a GeoJSON shape, sorts out the ones that are buildings, and emails a set of users
 with [mailgun](http://www.mailgun.com/).
 
-Files edited:
+Files edited for deployment by City of Boston:
 
 * [users.json](https://github.com/cityofboston/changewithin/blob/master/users.json). This is simply a list of email addresses to which the script will send the reports, in JSON format. The email templates for both html and text can be edited within script. The report itself contains a summary of changes, then lists each relevant changeset, its ID, and further details. These include the user who made the change and their comment, individual element IDs for building footprint and address changes that link to their history, and a map thumbnail that is centered on the location where the edits were made.
 
 * [boston.geojson](https://github.com/cityofboston/changewithin/blob/master/boston.geojson) GeoJSON file of city limits
 
+* [changewithin.py](https://github.com/cityofboston/changewithin/blob/master/changewithin.py) Added MultiPolygon support to script
 
 ## Installation
 

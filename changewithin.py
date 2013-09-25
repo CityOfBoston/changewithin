@@ -47,7 +47,15 @@ def point_in_poly(x, y, poly):
         p1x, p1y = p2x, p2y
     return inside
 
-def pip(lon, lat): return point_in_poly(lon, lat, bospoly)
+def pip(lon, lat):
+    if(bosgeotype == "MultiPolygon"):
+        for poly in bospoly:
+            if( point_in_poly(lon, lat, poly) ):
+                return true
+        return false
+
+    elif(bosgeotype == "Polygon"):
+        return point_in_poly(lon, lat, bospoly)
 
 def coordAverage(c1, c2): return (float(c1) + float(c2)) / 2
 
@@ -136,7 +144,16 @@ def loadChangeset(changeset):
     return changeset
 
 bos = json.load(open(os.path.join(dir_path,'boston.geojson')))
-bospoly = bos['features'][0]['geometry']['coordinates'][0]
+bospoly = [ ]
+bosgeotype = "Polygon"
+if(bos['features'][0]['geometry']['type'] == "Polygon"):
+  bospoly = bos['features'][0]['geometry']['coordinates'][0]
+  bosgeotype = "Polygon"
+elif(bos['features'][0]['geometry']['type'] == "MultiPolygon"):
+  bosgeotype = "MultiPolygon"
+  for poly in bos['features'][0]['geometry']['coordinates']:
+    bospoly.append( poly[0] )
+
 bosbox = get_bbox(bospoly)
 sys.stderr.write('getting state\n')
 state = getstate()
