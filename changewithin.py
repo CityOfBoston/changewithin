@@ -47,7 +47,7 @@ def point_in_poly(x, y, poly):
         p1x, p1y = p2x, p2y
     return inside
 
-def pip(lon, lat): return point_in_poly(lon, lat, nypoly)
+def pip(lon, lat): return point_in_poly(lon, lat, bospoly)
 
 def coordAverage(c1, c2): return (float(c1) + float(c2)) / 2
 
@@ -135,9 +135,9 @@ def loadChangeset(changeset):
     changeset['map_link'] = 'http://www.openstreetmap.org/?lat=%s&lon=%s&zoom=%s&layers=M' % (extent['lon'], extent['lat'], extent['zoom'])
     return changeset
 
-ny = json.load(open(os.path.join(dir_path,'nyc.geojson')))
-nypoly = ny['features'][0]['geometry']['coordinates'][0]
-nybox = get_bbox(nypoly)
+bos = json.load(open(os.path.join(dir_path,'boston.geojson')))
+bospoly = bos['features'][0]['geometry']['coordinates'][0]
+bosbox = get_bbox(bospoly)
 sys.stderr.write('getting state\n')
 state = getstate()
 getosc(state)
@@ -174,7 +174,7 @@ for event, n in context:
         if n.tag == 'node':
             lon = float(n.get('lon', 0))
             lat = float(n.get('lat', 0))
-            if point_in_box(lon, lat, nybox) and pip(lon, lat):
+            if point_in_box(lon, lat, bosbox) and pip(lon, lat):
                 cid = n.get('changeset')
                 nid = n.get('id', -1)
                 nids.add(nid)
